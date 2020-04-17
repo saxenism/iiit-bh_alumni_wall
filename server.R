@@ -7,12 +7,12 @@ library("dplyr")
 shinyServer(function(input, output, session){
   
 initial_df <- function() {
-  test_df <- read.csv(".//cleaned_alumni_2.csv")
+  test_df <- read.csv("input_data/cleaned_alumni_2.csv")
   test_df
 }
   
 prepare_df <- function() {
-    test_df <- read.csv(".//cleaned_alumni_2.csv")
+    test_df <- read.csv("input_data/cleaned_alumni_2.csv")
     #Creating 7 different data frames consisting of names and organizations
     df1 <- test_df[ , c("Full.name", "Organization.1", "id", "Location", "Industry")]  
     colnames(df1) <- c("Full.name", "Organization", "id", "Location", "Industry")  
@@ -98,132 +98,6 @@ prepare_df <- function() {
   df_org <- org_df(df)
   df_loc <- loc_df(df)
   df_ind <- ind_df(df)
-
-
-###################################################################################################################################################################################################################  
-# Helper functions
-###################################################################################################################################################################################################################  
-  
-  top_org_plot_fun <- function(){
-    df <- prepare_df()
-    df_org <- org_df(df)
-    if(input$org_rank_in == "1-10") {
-      df_org <- df_org[c(1:10), ]  
-    } else if(input$org_rank_in == "11-20"){
-      df_org <- df_org[c(11:20), ] 
-    }else if(input$org_rank_in == "21-30"){
-      df_org <- df_org[c(21:30), ] 
-    }else if(input$org_rank_in == "31-40"){
-      df_org <- df_org[c(31:40), ] 
-    }else{
-      df_org <- df_org[c(41:50), ] 
-    }
-    top_org_plot <- ggplot(data = df_org, aes(x=reorder(df_org$Orgs,-df_org$Employees), y=df_org$Employees)) + geom_bar(stat = "identity", fill = "Light Yellow", colour = "Red") + coord_flip()
-    top_org_plot <- top_org_plot + xlab("Organizations") + ylab("Employee Count") + ggtitle("IIIT-Bh Organization Chart") + theme_clean()
-    top_org_plot <- top_org_plot + theme(axis.title.x = element_text(colour = "Black", size = 30),
-                                         axis.title.y = element_text(colour = "Black", size = 30),
-                                         axis.text.x = element_text(size = 10),
-                                         axis.text.y = element_text(size = 10),
-                                         legend.title = element_text(size = 30),
-                                         legend.text = element_text(size = 20),
-                                         legend.justification = c(1,1),
-                                         plot.title = element_text(colour = "Black", size = 40, family = "Courier", hjust = 0.5))
-    
-  }
-  org_emp_table_fun <- function(in_name) {
-    raw_df[which((raw_df$Organization.1 == in_name) |
-                   (raw_df$Organization.2 == in_name) |
-                   (raw_df$Organization.3 == in_name) |
-                   (raw_df$Organization.4 == in_name) |
-                   (raw_df$Organization.5 == in_name) |
-                   (raw_df$Organization.6 == in_name) |
-                   (raw_df$Organization.7 == in_name), arr.ind = TRUE), c("Full.name", "Profile.url", "Title", "Location", "Organization.1", "Organization.2", "Organization.3", "Organization.4", "Organization.5", "Organization.6", "Organization.7")]
-  }
-  
-  org_emp_rec_table <- reactive({org_emp_table_fun(input$org_name_in)})
-  
-  
-############################################################################################################################################################################################  
-
-  top_loc_plot_fun <- function(){
-    df_fun <- prepare_df()
-    df_loc_fun <- loc_df(df_fun)
-    if(input$loc_rank_in == "1-10") {
-      df_loc_fun <- df_loc_fun[c(1:10), ]  
-    } else if(input$loc_rank_in == "11-20"){
-      df_loc_fun <- df_loc_fun[c(11:20), ] 
-    }else if(input$loc_rank_in == "21-30"){
-      df_loc_fun <- df_loc_fun[c(21:30), ] 
-    }else if(input$loc_rank_in == "31-40"){
-      df_loc_fun <- df_loc_fun[c(31:40), ] 
-    }else{
-      df_loc_fun <- df_loc_fun[c(41:50), ] 
-    }
-    top_loc_plot <- ggplot(data = df_loc_fun, aes(x=reorder(df_loc_fun$Location,-df_loc_fun$Employees), y=df_loc_fun$Employees)) + geom_bar(stat = "identity", fill = "Light Yellow", colour = "Red") + coord_flip()
-    top_loc_plot <- top_loc_plot + xlab("Locations") + ylab("Employee Count") + ggtitle("IIIT-Bh Location Chart") + theme_clean()
-    top_loc_plot <- top_loc_plot + theme(axis.title.x = element_text(colour = "Black", size = 30),
-                                         axis.title.y = element_text(colour = "Black", size = 30),
-                                         axis.text.x = element_text(size = 10),
-                                         axis.text.y = element_text(size = 10),
-                                         legend.title = element_text(size = 30),
-                                         legend.text = element_text(size = 20),
-                                         legend.justification = c(1,1),
-                                         plot.title = element_text(colour = "Black", size = 40, family = "Courier", hjust = 0.5))
-    
-  }  
-  
-  loc_emp_table_fun <- function(in_loc) {
-    raw_df[which(raw_df$Location == in_loc, arr.ind = TRUE), c("Full.name", "Profile.url", "Title", "Location", "Organization.1", "Organization.2", "Organization.3", "Organization.4", "Organization.5", "Organization.6", "Organization.7")]
-  }
-  
-  loc_emp_rec_table <- reactive({loc_emp_table_fun(input$loc_name_in)})
-  
-
-  
-############################################################################################################################################################################################  
-  
-  top_ind_plot_fun <- function(){
-    df_fun <- prepare_df()
-    df_ind_fun <- ind_df(df_fun)
-    if(input$ind_rank_in == "1-10") {
-      df_ind_fun <- df_ind_fun[c(1:10), ]  
-    } else if(input$ind_rank_in == "11-20"){
-      df_ind_fun <- df_ind_fun[c(11:20), ] 
-    }else if(input$ind_rank_in == "21-30"){
-      df_ind_fun <- df_ind_fun[c(21:30), ] 
-    }else if(input$ind_rank_in == "31-40"){
-      df_ind_fun <- df_ind_fun[c(31:40), ] 
-    }else{
-      df_ind_fun <- df_ind_fun[c(41:43), ] 
-    }
-    top_ind_plot <- ggplot(data = df_ind_fun, aes(x=reorder(df_ind_fun$Industry,-df_ind_fun$Employees), y=df_ind_fun$Employees)) + geom_bar(stat = "identity", fill = "Light Yellow", colour = "Red") + coord_flip()
-    top_ind_plot <- top_ind_plot + xlab("Industries") + ylab("Alumni Count") + ggtitle("IIIT-Bh Industry Chart") + theme_clean()
-    top_ind_plot <- top_ind_plot + theme(axis.title.x = element_text(colour = "Black", size = 30),
-                                         axis.title.y = element_text(colour = "Black", size = 30),
-                                         axis.text.x = element_text(size = 10),
-                                         axis.text.y = element_text(size = 10),
-                                         legend.title = element_text(size = 30),
-                                         legend.text = element_text(size = 20),
-                                         legend.justification = c(1,1),
-                                         plot.title = element_text(colour = "Black", size = 40, family = "Courier", hjust = 0.5))
-    
-  }  
-  
-  ind_emp_table_fun <- function(in_ind) {
-    raw_df[which(raw_df$Industry == in_ind, arr.ind = TRUE), c("Full.name", "Profile.url", "Title", "Industry", "Organization.1", "Organization.2", "Organization.3", "Organization.4", "Organization.5", "Organization.6", "Organization.7")]
-  }
-  
-  ind_emp_rec_table <- reactive({ind_emp_table_fun(input$ind_name_in)})
-
-###############################################################################################################################################################################################  
-  
-  name_emp_table_fun <- function(in_name) {
-    show_df <- raw_df[which(raw_df$Full.name == in_name, arr.ind = TRUE), ]
-    show_df <- subset(show_df, select = -c(Avatar, id))
-  }
-  
-  name_emp_rec_table <- reactive({name_emp_table_fun(input$emp_name_in)})
-  
         
 ###################################################################################################################################################################################################################  
 # "search_org" tab
@@ -231,7 +105,7 @@ prepare_df <- function() {
 
   
   output$org_range_input <- renderUI({
-   selectInput(inputId = "org_rank_in", "Select Range", choices = c("1-10","11-20","21-30","31-40","41-50"), selected = "1-10") 
+   selectInput(inputId = "org_rank_in", "Select Range", choices = c("1-10","11-20","21-30","31-40","41-50")) 
   })
   
   output$org_name_input <- renderUI({
@@ -279,7 +153,7 @@ prepare_df <- function() {
 ###################################################################################################################################################################################################################  
 
   output$emp_name_input <- renderUI({
-    selectInput(inputId = "emp_name_in", "Select Name", choices = sort(df$Full.name), selected = "Aditya Samantaray")
+    selectInput(inputId = "emp_name_in", "Select Name", choices = sort(df$Full.name), selected = df$Full.name[1])
   })
   
   output$participants <- renderValueBox({
@@ -293,8 +167,142 @@ prepare_df <- function() {
   
   output$name_emp_table <- renderDT({name_emp_rec_table()})
   
-###################################################################################################################################################################################################################  
-# "about" tab
-###################################################################################################################################################################################################################  
+  ###################################################################################################################################################################################################################  
+  # Helper functions
+  ###################################################################################################################################################################################################################  
+  
+  top_org_plot_fun_helper <- function(org_test){
+    df <- prepare_df()
+    df_org <- org_df(df)
+    if(is.na(org_test) | length(org_test) == 0 | is.null(org_test)){
+      df_org <- df_org[c(1:10), ]
+    } else if(org_test == "1-10") {
+      df_org <- df_org[c(1:10), ]  
+    } else if(org_test == "11-20"){
+      df_org <- df_org[c(11:20), ] 
+    } else if(org_test == "21-30"){
+      df_org <- df_org[c(21:30), ] 
+    } else if(org_test == "31-40"){
+      df_org <- df_org[c(31:40), ] 
+    } else{
+      df_org <- df_org[c(41:50), ] 
+    }
+    top_org_plot <- ggplot(data = df_org, aes(x=reorder(df_org$Orgs,-df_org$Employees), y=df_org$Employees)) + geom_bar(stat = "identity", fill = "Light Yellow", colour = "Red") + coord_flip()
+    top_org_plot <- top_org_plot + xlab("Organizations") + ylab("Employee Count") + ggtitle("IIIT-Bh Organization Chart") + theme_clean()
+    top_org_plot <- top_org_plot + theme(axis.title.x = element_text(colour = "Black", size = 30),
+                                         axis.title.y = element_text(colour = "Black", size = 30),
+                                         axis.text.x = element_text(size = 10),
+                                         axis.text.y = element_text(size = 10),
+                                         legend.title = element_text(size = 30),
+                                         legend.text = element_text(size = 20),
+                                         legend.justification = c(1,1),
+                                         plot.title = element_text(colour = "Black", size = 40, family = "Courier", hjust = 0.5))
+    
+  }
+  
+  top_org_plot_fun <- eventReactive(input$org_rank_in, {
+    top_org_plot_fun_helper(input$org_rank_in)
+    })
+  
+  org_emp_table_fun <- function(in_name) {
+    raw_df[which((raw_df$Organization.1 == in_name) |
+                   (raw_df$Organization.2 == in_name) |
+                   (raw_df$Organization.3 == in_name) |
+                   (raw_df$Organization.4 == in_name) |
+                   (raw_df$Organization.5 == in_name) |
+                   (raw_df$Organization.6 == in_name) |
+                   (raw_df$Organization.7 == in_name), arr.ind = TRUE), c("Full.name", "Profile.url", "Title", "Location", "Organization.1", "Organization.2", "Organization.3", "Organization.4", "Organization.5", "Organization.6", "Organization.7")]
+  }
+  
+  org_emp_rec_table <- reactive({org_emp_table_fun(input$org_name_in)})
+  
+  
+  ############################################################################################################################################################################################  
+  
+  top_loc_plot_fun_helper <- function(loc_test){
+    df_fun <- prepare_df()
+    df_loc_fun <- loc_df(df_fun)
+    if(loc_test == "1-10") {
+      df_loc_fun <- df_loc_fun[c(1:10), ]  
+    } else if(loc_test == "11-20"){
+      df_loc_fun <- df_loc_fun[c(11:20), ] 
+    }else if(loc_test == "21-30"){
+      df_loc_fun <- df_loc_fun[c(21:30), ] 
+    }else if(loc_test == "31-40"){
+      df_loc_fun <- df_loc_fun[c(31:40), ] 
+    }else{
+      df_loc_fun <- df_loc_fun[c(41:50), ] 
+    }
+    top_loc_plot <- ggplot(data = df_loc_fun, aes(x=reorder(df_loc_fun$Location,-df_loc_fun$Employees), y=df_loc_fun$Employees)) + geom_bar(stat = "identity", fill = "Light Yellow", colour = "Red") + coord_flip()
+    top_loc_plot <- top_loc_plot + xlab("Locations") + ylab("Employee Count") + ggtitle("IIIT-Bh Location Chart") + theme_clean()
+    top_loc_plot <- top_loc_plot + theme(axis.title.x = element_text(colour = "Black", size = 30),
+                                         axis.title.y = element_text(colour = "Black", size = 30),
+                                         axis.text.x = element_text(size = 10),
+                                         axis.text.y = element_text(size = 10),
+                                         legend.title = element_text(size = 30),
+                                         legend.text = element_text(size = 20),
+                                         legend.justification = c(1,1),
+                                         plot.title = element_text(colour = "Black", size = 40, family = "Courier", hjust = 0.5))
+    
+  }  
+  
+  top_loc_plot_fun <- eventReactive(input$loc_rank_in,{
+    top_loc_plot_fun_helper(input$loc_rank_in)
+    })
+  loc_emp_table_fun <- function(in_loc) {
+    raw_df[which(raw_df$Location == in_loc, arr.ind = TRUE), c("Full.name", "Profile.url", "Title", "Location", "Organization.1", "Organization.2", "Organization.3", "Organization.4", "Organization.5", "Organization.6", "Organization.7")]
+  }
+  
+  loc_emp_rec_table <- reactive({loc_emp_table_fun(input$loc_name_in)})
+  
+  
+  
+  ############################################################################################################################################################################################  
+  
+  top_ind_plot_fun_helper <- function(ind_test){
+    df_fun <- prepare_df()
+    df_ind_fun <- ind_df(df_fun)
+    if(ind_test == "1-10") {
+      df_ind_fun <- df_ind_fun[c(1:10), ]  
+    } else if(ind_test == "11-20"){
+      df_ind_fun <- df_ind_fun[c(11:20), ] 
+    }else if(ind_test == "21-30"){
+      df_ind_fun <- df_ind_fun[c(21:30), ] 
+    }else if(ind_test == "31-40"){
+      df_ind_fun <- df_ind_fun[c(31:40), ] 
+    }else{
+      df_ind_fun <- df_ind_fun[c(41:43), ] 
+    }
+    top_ind_plot <- ggplot(data = df_ind_fun, aes(x=reorder(df_ind_fun$Industry,-df_ind_fun$Employees), y=df_ind_fun$Employees)) + geom_bar(stat = "identity", fill = "Light Yellow", colour = "Red") + coord_flip()
+    top_ind_plot <- top_ind_plot + xlab("Industries") + ylab("Alumni Count") + ggtitle("IIIT-Bh Industry Chart") + theme_clean()
+    top_ind_plot <- top_ind_plot + theme(axis.title.x = element_text(colour = "Black", size = 30),
+                                         axis.title.y = element_text(colour = "Black", size = 30),
+                                         axis.text.x = element_text(size = 10),
+                                         axis.text.y = element_text(size = 10),
+                                         legend.title = element_text(size = 30),
+                                         legend.text = element_text(size = 20),
+                                         legend.justification = c(1,1),
+                                         plot.title = element_text(colour = "Black", size = 40, family = "Courier", hjust = 0.5))
+    
+  }  
+  
+  top_ind_plot_fun <- eventReactive(input$ind_rank_in,{
+    top_ind_plot_fun_helper(input$ind_rank_in)}
+    )
+  
+  ind_emp_table_fun <- function(in_ind) {
+    raw_df[which(raw_df$Industry == in_ind, arr.ind = TRUE), c("Full.name", "Profile.url", "Title", "Industry", "Organization.1", "Organization.2", "Organization.3", "Organization.4", "Organization.5", "Organization.6", "Organization.7")]
+  }
+  
+  ind_emp_rec_table <- reactive({ind_emp_table_fun(input$ind_name_in)})
+  
+###############################################################################################################################################################################################  
+  
+  name_emp_table_fun <- function(in_name) {
+    show_df <- raw_df[which(raw_df$Full.name == in_name, arr.ind = TRUE), ]
+    show_df <- subset(show_df, select = -c(Avatar, id))
+  }
+  
+  name_emp_rec_table <- reactive({name_emp_table_fun(input$emp_name_in)})
   
 })

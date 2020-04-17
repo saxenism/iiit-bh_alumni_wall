@@ -1,6 +1,6 @@
-setwd("C:\\Users\\Rahul\\Desktop\\R Programming\\alumni_shiny_app")
+#setwd("C:\\Users\\Rahul\\Desktop\\R Programming\\alumni_shiny_app")
 
-dataset <- read.csv(file.choose())
+#dataset <- read.csv(file.choose())
 
 #Removing duplicate entries
 dataset <- unique(dataset)
