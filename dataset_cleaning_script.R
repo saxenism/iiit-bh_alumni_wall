@@ -1,6 +1,6 @@
-#setwd("C:\\Users\\Rahul\\Desktop\\R Programming\\alumni_shiny_app")
+setwd("C:\\Users\\Rahul\\Desktop\\R Programming\\alumni_shiny_app")
 
-#dataset <- read.csv(file.choose())
+dataset <- read.csv(file.choose())
 
 #Removing duplicate entries
 dataset <- unique(dataset)
@@ -20,15 +20,18 @@ colnames(dataset)
 #Converting all relevant factor levels to characters.
 dataset$Organization.1 <- as.character(dataset$Organization.1)
 dataset$Organization.2 <- as.character(dataset$Organization.2)
+dataset$Profile.url <- as.character(dataset$Profile.url)
 
 #Finding all entries that do not have any organisation associated with them
 student_df_ind <- which(dataset$Organization.1 == "", arr.ind = TRUE)
+for(i in student_df_ind) {
+  print(as.character(dataset[i, ]$Title))
+}
 #Checking whether these entries should be removed or not...
 student_df <- NULL
 for (i in student_df_ind) {
   student_df <- rbind(student_df, dataset[i, ])
 }
-student_df$Title
 
 #Updating the dataset by removing all student_df_ind
 dataset <- dataset[-(student_df_ind), ]
@@ -53,8 +56,8 @@ for ( i in student_check) {
 dataset <- dataset[-(student_check_fail), ]
 
 #Writing out this dataset into a .csv file
-write.csv(dataset, ".//cleaned_alumni_2.csv")
-
+write.csv(dataset, ".//cleaned_alumni_4.csv")
+saveRDS(dataset, ".//input_data//cleaned_alumni_4.rds")
 
 # top_investors_plot <- ggplot(data = top_investors, aes(x = top_investors$CompanyName, y = top_investors$AmountInvested)) + geom_bar(stat = "identity", fill = "SkyBlue") + coord_flip()
 # top_investors_plot <- top_investors_plot + xlab("Company Name") + ylab("Amount Invested(in $)") + ggtitle("Top investors")
