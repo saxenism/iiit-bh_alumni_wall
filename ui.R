@@ -5,13 +5,14 @@ library("ggthemes")
 library("DT")
 library("plotly")
 library("shinyjs")
+library("googlesheets4")
 
 
 shinyUI(
   hidden(
     div(id = "full_page",
         dashboardPage(
-          dashboardHeader(title = "IIIT Bhubaneswar Alumni Wall", titleWidth = 1880),
+          dashboardHeader(title = "IIIT Bhubaneswar Alumni Wall", titleWidth = "98%"),
           
           dashboardSidebar(
             width = 300,
@@ -21,6 +22,7 @@ shinyUI(
               menuItem(h4("Search by Name"), tabName = "search_name", icon = icon("address-book-o")),
               menuItem(h4("Search by Location"), tabName = "search_loc", icon = icon("globe")),
               menuItem(h4("Search by Industry"), tabName = "search_ind", icon = icon("rocket")),
+              menuItem(h4("Furbish missing information"), tabName = "miss_info", icon = icon("mortar-board")),
               menuItem(h4("About"), tabName = "about", icon = icon("clipboard"))
             )
           ),
@@ -54,6 +56,16 @@ shinyUI(
                                valueBoxOutput(outputId = "participants")),
                       fluidRow(box(status = "primary", div(style = 'overflow-x: scroll', DTOutput('name_emp_table')), width = 12))
               ),
+              tabItem(tabName = "miss_info",
+                      fluidRow(status = "primary", 
+                        column(width = 10, 
+                               box(
+                                 width = NULL, 
+                                 title = h4(tags$b("Fill Missing Information Here")), 
+                                 div(style = 'overflow-x: scroll', HTML('<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdynJPRazoHKoySDhriSbqvakfX6aVB9sKX6KqTW5_AhnZS_g/viewform?embedded=true" width="100%" height="700" frameborder="0" marginheight="0" marginwidth="0">Loading.</iframe>'))
+                               ))
+                      ),
+                      fluidRow(box(h4(title = "Previous Entries"), status = "primary", div(style = 'overflow-x: scroll', DTOutput('googleFormData')), width = 12))),
               tabItem(tabName = "about",
                       tags$div(
                         tags$h2(tags$u("Updates: ")), 
@@ -81,8 +93,8 @@ shinyUI(
               
             )
           )
+
         )
-        )
+    )
   )
-    
 )
